@@ -26,9 +26,9 @@
 **Time:** 45–60 minutes
 
 **Three columns:**
-- **Start** — things we should begin doing that we aren't
-- **Stop** — things we're doing that add no value or cause friction
-- **Continue** — things working well that we must protect
+- **Start** - things we should begin doing that we aren't
+- **Stop** - things we're doing that add no value or cause friction
+- **Continue** - things working well that we must protect
 
 **Facilitator notes:**
 - The STOP column is gold. Teams rarely give themselves permission to stop doing things. Push for specificity.
@@ -37,22 +37,22 @@
 
 ---
 
-## Format 2: 4Ls — Liked, Learned, Lacked, Longed For
+## Format 2: 4Ls - Liked, Learned, Lacked, Longed For
 
 **When to use:** Teams that have run retros for 3+ sprints. Good for reflection-heavy sprints.
 
 **Time:** 50–60 minutes
 
 **Four columns:**
-- **Liked** — what went well that we should protect
-- **Learned** — what we discovered about process, tech, or each other
-- **Lacked** — what was missing that would have helped
-- **Longed For** — what we wish we had — tools, clarity, support, time
+- **Liked** - what went well that we should protect
+- **Learned** - what we discovered about process, tech, or each other
+- **Lacked** - what was missing that would have helped
+- **Longed For** - what we wish we had - tools, clarity, support, time
 
 **Facilitator notes:**
-- "Lacked" and "Longed For" often overlap — let the team self-sort
-- Focus action planning on "Lacked" — it's the most immediately actionable
-- "Learned" is often skipped in action planning but is valuable for team knowledge — consider documenting these in Confluence
+- "Lacked" and "Longed For" often overlap - let the team self-sort
+- Focus action planning on "Lacked" - it's the most immediately actionable
+- "Learned" is often skipped in action planning but is valuable for team knowledge - consider documenting these in Confluence
 
 ---
 
@@ -63,15 +63,15 @@
 **Time:** 50–60 minutes
 
 **Visual elements:**
-- **Wind** — what's pushing us forward (strengths, tailwinds)
-- **Anchors** — what's slowing us down (impediments, friction)
-- **Rocks ahead** — risks we can see coming
-- **Island** — our destination (sprint goal, team vision)
+- **Wind** - what's pushing us forward (strengths, tailwinds)
+- **Anchors** - what's slowing us down (impediments, friction)
+- **Rocks ahead** - risks we can see coming
+- **Island** - our destination (sprint goal, team vision)
 
 **Facilitator notes:**
 - Always start with the Island. Remind the team what they're sailing toward *before* discussing anchors.
-- Rocks are usually ignored by teams — push hard here: *"If this risk hits, what does it cost us?"*
-- Anchors that appear every sprint are systemic impediments — escalate them, don't just note them.
+- Rocks are usually ignored by teams - push hard here: *"If this risk hits, what does it cost us?"*
+- Anchors that appear every sprint are systemic impediments - escalate them, don't just note them.
 
 ---
 
@@ -82,34 +82,34 @@
 **Time:** 40–50 minutes
 
 **Three columns:**
-- **Mad** — things that frustrated or blocked us
-- **Sad** — things we didn't achieve or lost
-- **Glad** — things that made us proud or happy
+- **Mad** - things that frustrated or blocked us
+- **Sad** - things we didn't achieve or lost
+- **Glad** - things that made us proud or happy
 
 **Facilitator notes:**
-- This format surfaces emotions more directly than others — be prepared to hold space before jumping to solutions
+- This format surfaces emotions more directly than others - be prepared to hold space before jumping to solutions
 - Spend at least 10 minutes acknowledging Mad and Sad before moving to actions
-- If things get personal, redirect to process: *"What about the process caused this — not who, but what?"*
-- Never end this retro without time on Glad — closing on positive energy matters
+- If things get personal, redirect to process: *"What about the process caused this - not who, but what?"*
+- Never end this retro without time on Glad - closing on positive energy matters
 
 ---
 
-## Format 5: DAKI — Drop, Add, Keep, Improve
+## Format 5: DAKI - Drop, Add, Keep, Improve
 
 **When to use:** Mature teams. After a PI or major release. When the team needs to audit their own process.
 
 **Time:** 50–60 minutes
 
 **Four columns:**
-- **Drop** — what we're doing that adds no value
-- **Add** — what we should introduce that we're not doing
-- **Keep** — what's working well that we must protect
-- **Improve** — what we're doing that could be done better
+- **Drop** - what we're doing that adds no value
+- **Add** - what we should introduce that we're not doing
+- **Keep** - what's working well that we must protect
+- **Improve** - what we're doing that could be done better
 
 **Facilitator notes:**
-- Drop is the most powerful column — and the most avoided. Teams fear stopping things.
+- Drop is the most powerful column - and the most avoided. Teams fear stopping things.
 - Push for specificity on Improve: *"Improve our standups"* is not actionable. *"Cut standup to 10 minutes by removing status updates"* is.
-- Keep items should be celebrated, not just listed — acknowledge what the team has built
+- Keep items should be celebrated, not just listed - acknowledge what the team has built
 - Every Drop and Improve needs a named action with an owner
 
 ---
