@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retro Toolkit — Sudindra Purohit</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #1a1f2e;
+    border-bottom: 2px solid #2d3a5a;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  header h1 { font-size: 1.3rem; color: #7eb3f5; font-weight: 700; }
+  header span { font-size: 0.8rem; color: #64748b; }
+
+  .setup-screen, .retro-screen, .summary-screen {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* ── Setup screen ── */
+  .setup-screen h2 { font-size: 1.5rem; margin-bottom: 8px; color: #f1f5f9; }
+  .setup-screen p  { color: #94a3b8; margin-bottom: 32px; }
+
+  .format-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .format-card {
+    background: #1a1f2e;
+    border: 2px solid #2d3a5a;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .format-card:hover  { border-color: #7eb3f5; transform: translateY(-2px); }
+  .format-card.active { border-color: #7eb3f5; background: #1e2a42; }
+
+  .format-card h3  { font-size: 0.95rem; margin-bottom: 6px; color: #f1f5f9; }
+  .format-card p   { font-size: 0.75rem; color: #64748b; line-height: 1.5; }
+  .format-card .tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    background: #2d3a5a;
+    color: #7eb3f5;
+    border-radius: 20px;
+    padding: 2px 8px;
+    margin-bottom: 8px;
+  }
+
+  .sprint-input {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+
+  .sprint-input input {
+    background: #1a1f2e;
+    border: 2px solid #2d3a5a;
+    border-radius: 8px;
+    color: #e2e8f0;
+    padding: 10px 16px;
+    font-size: 0.95rem;
+    flex: 1;
+    max-width: 320px;
+  }
+
+  .sprint-input input:focus { outline: none; border-color: #7eb3f5; }
+
+  .btn {
+    background: #3b6fd4;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn:hover    { background: #2d5abf; }
+  .btn.ghost    { background: transparent; border: 2px solid #2d3a5a; color: #94a3b8; }
+  .btn.ghost:hover { border-color: #7eb3f5; color: #7eb3f5; }
+  .btn.danger   { background: #c0392b; }
+  .btn.success  { background: #27ae60; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── Retro screen ── */
+  .retro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .retro-header h2 { font-size: 1.3rem; color: #f1f5f9; }
+  .retro-header p  { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+
+  .columns {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .col-2 { grid-template-columns: repeat(2, 1fr); }
+  .col-3 { grid-template-columns: repeat(3, 1fr); }
+  .col-4 { grid-template-columns: repeat(4, 1fr); }
+
+  @media (max-width: 700px) {
+    .col-2, .col-3, .col-4 { grid-template-columns: 1fr; }
+  }
+
+  .column {
+    background: #1a1f2e;
+    border-radius: 12px;
+    padding: 16px;
+    border-top: 4px solid #3b6fd4;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .column h3 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 4px;
+  }
+
+  .column .col-desc {
+    font-size: 0.72rem;
+    color: #64748b;
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .stickies { flex: 1; display: flex; flex-direction: column; gap: 8px; min-height: 100px; }
+
+  .sticky {
+    background: #252d42;
+    border: 1px solid #2d3a5a;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .sticky.voted { border-left: 3px solid #f59e0b; }
+
+  .sticky-text { flex: 1; }
+
+  .sticky-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+  .sticky-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 2px 5px;
+    border-radius: 4px;
+    color: #64748b;
+    transition: all 0.15s;
+  }
+
+  .sticky-btn:hover       { background: #2d3a5a; color: #e2e8f0; }
+  .sticky-btn.vote-btn    { color: #f59e0b; }
+  .sticky-btn.delete-btn  { color: #e74c3c; }
+
+  .vote-count {
+    display: inline-block;
+    background: #f59e0b22;
+    color: #f59e0b;
+    border-radius: 20px;
+    padding: 0 5px;
+    font-size: 0.7rem;
+    margin-left: 4px;
+  }
+
+  .add-sticky {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .add-sticky input {
+    flex: 1;
+    background: #0f1117;
+    border: 1px solid #2d3a5a;
+    border-radius: 6px;
+    color: #e2e8f0;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+  }
+
+  .add-sticky input:focus { outline: none; border-color: #7eb3f5; }
+
+  .add-sticky button {
+    background: #2d3a5a;
+    border: none;
+    border-radius: 6px;
+    color: #7eb3f5;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.15s;
+  }
+
+  .add-sticky button:hover { background: #3b6fd4; color: #fff; }
+
+  /* ── Actions section ── */
+  .actions-section {
+    background: #1a1f2e;
+    border-radius: 12px;
+    padding: 20px;
+    border-left: 4px solid #27ae60;
+    margin-bottom: 24px;
+  }
+
+  .actions-section h3 { font-size: 0.9rem; color: #27ae60; margin-bottom: 12px; font-weight: 700; }
+
+  .action-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .action-item input {
+    background: #0f1117;
+    border: 1px solid #2d3a5a;
+    border-radius: 6px;
+    color: #e2e8f0;
+    padding: 6px 10px;
+    font-size: 0.82rem;
+  }
+
+  .action-item .action-text  { flex: 2; min-width: 160px; }
+  .action-item .action-owner { flex: 1; min-width: 100px; }
+
+  .action-item input:focus { outline: none; border-color: #27ae60; }
+
+  .action-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #252d42;
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    font-size: 0.82rem;
+    flex-wrap: wrap;
+  }
+
+  .action-row .owner-tag {
+    background: #27ae6022;
+    color: #27ae60;
+    border-radius: 20px;
+    padding: 1px 8px;
+    font-size: 0.72rem;
+  }
+
+  .action-row button {
+    margin-left: auto;
+    background: none;
+    border: none;
+    color: #e74c3c;
+    cursor: pointer;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .action-row button:hover { background: #2d3a5a; }
+
+  /* ── Summary screen ── */
+  .summary-screen { max-width: 800px; }
+  .summary-screen h2 { font-size: 1.4rem; margin-bottom: 4px; }
+  .summary-screen .meta { color: #64748b; font-size: 0.82rem; margin-bottom: 28px; }
+
+  .summary-block { margin-bottom: 28px; }
+  .summary-block h3 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #7eb3f5; margin-bottom: 10px; }
+
+  .summary-sticky {
+    background: #1a1f2e;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .summary-action {
+    background: #1a1f2e;
+    border-left: 3px solid #27ae60;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .export-bar {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  .hidden { display: none !important; }
+  .timer {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #7eb3f5;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer.warning { color: #f59e0b; }
+  .timer.danger  { color: #e74c3c; }
+  .timer-controls { display: flex; gap: 8px; align-items: center; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔄 Retro Toolkit</h1>
+  <span>by Sudindra Purohit · CSM®</span>
+</header>
+
+<!-- ── SETUP SCREEN ── -->
+<div class="setup-screen" id="setupScreen">
+  <h2>Run a Retrospective</h2>
+  <p>Pick a format, name your sprint, and start. No login. No tools. Just your team.</p>
+
+  <div class="sprint-input">
+    <input type="text" id="sprintName" placeholder="Sprint name (e.g. Sprint 14)" maxlength="40">
+  </div>
+
+  <div class="format-grid" id="formatGrid"></div>
+
+  <button class="btn" id="startBtn" disabled onclick="startRetro()">Start Retro →</button>
+</div>
+
+<!-- ── RETRO SCREEN ── -->
+<div class="retro-screen hidden" id="retroScreen">
+  <div class="retro-header">
+    <div>
+      <h2 id="retroTitle"></h2>
+      <p id="retroSubtitle"></p>
+    </div>
+    <div class="timer-controls">
+      <div class="timer" id="timer">60:00</div>
+      <button class="btn ghost" onclick="toggleTimer()" id="timerBtn">▶ Start</button>
+      <button class="btn ghost" onclick="resetTimer()">↺</button>
+    </div>
+  </div>
+
+  <div class="columns" id="columnsContainer"></div>
+
+  <!-- Actions -->
+  <div class="actions-section">
+    <h3>✅ Action Items</h3>
+    <div id="actionsList"></div>
+    <div class="action-item">
+      <input type="text" class="action-text" id="actionText" placeholder="Action item...">
+      <input type="text" class="action-owner" id="actionOwner" placeholder="Owner name">
+      <button class="btn" onclick="addAction()" style="padding:6px 14px;font-size:0.82rem;">Add</button>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    <button class="btn success" onclick="showSummary()">View Summary →</button>
+    <button class="btn ghost" onclick="goHome()">← New Retro</button>
+  </div>
+</div>
+
+<!-- ── SUMMARY SCREEN ── -->
+<div class="summary-screen hidden" id="summaryScreen">
+  <h2>Retro Summary</h2>
+  <p class="meta" id="summaryMeta"></p>
+  <div id="summaryContent"></div>
+  <div class="export-bar">
+    <button class="btn success" onclick="exportText()">📋 Copy Summary</button>
+    <button class="btn ghost" onclick="showRetro()">← Back to Retro</button>
+    <button class="btn ghost" onclick="goHome()">🏠 New Retro</button>
+  </div>
+</div>
+
+<script>
+// ── Format definitions ────────────────────────────────────────────────────────
+
+const FORMATS = {
+  ssc: {
+    name: "Start / Stop / Continue",
+    tag: "All teams",
+    desc: "Safe default. Great for new teams or after a rough sprint.",
+    columns: [
+      { key: "start",    label: "Start",    color: "#27ae60", desc: "What should we begin doing?" },
+      { key: "stop",     label: "Stop",     color: "#e74c3c", desc: "What should we stop doing?" },
+      { key: "continue", label: "Continue", color: "#3b6fd4", desc: "What's working well?" },
+    ]
+  },
+  fourls: {
+    name: "4Ls",
+    tag: "Mature teams",
+    desc: "Liked, Learned, Lacked, Longed For. Good for reflection-heavy sprints.",
+    columns: [
+      { key: "liked",    label: "Liked",      color: "#27ae60", desc: "What went well?" },
+      { key: "learned",  label: "Learned",    color: "#3b6fd4", desc: "What did we discover?" },
+      { key: "lacked",   label: "Lacked",     color: "#e74c3c", desc: "What was missing?" },
+      { key: "longedfor",label: "Longed For", color: "#9b59b6", desc: "What do we wish we had?" },
+    ]
+  },
+  sailboat: {
+    name: "Sailboat",
+    tag: "Goal reset",
+    desc: "Reconnects teams to purpose. Use when motivation is low.",
+    columns: [
+      { key: "wind",    label: "⛵ Wind",    color: "#27ae60", desc: "What's pushing us forward?" },
+      { key: "anchor",  label: "⚓ Anchors", color: "#e74c3c", desc: "What's slowing us down?" },
+      { key: "rocks",   label: "🪨 Rocks",   color: "#f59e0b", desc: "What risks do we see ahead?" },
+      { key: "island",  label: "🏝️ Island",  color: "#3b6fd4", desc: "Where are we headed?" },
+    ]
+  },
+  madsadglad: {
+    name: "Mad / Sad / Glad",
+    tag: "After stress",
+    desc: "Surfaces emotions directly. Use after difficult sprints.",
+    columns: [
+      { key: "mad", label: "😤 Mad", color: "#e74c3c", desc: "What frustrated us?" },
+      { key: "sad", label: "😔 Sad", color: "#9b59b6", desc: "What disappointed us?" },
+      { key: "glad",label: "😊 Glad",color: "#27ae60", desc: "What made us proud?" },
+    ]
+  },
+  daki: {
+    name: "DAKI",
+    tag: "Process audit",
+    desc: "Drop, Add, Keep, Improve. Best for mature teams after a PI.",
+    columns: [
+      { key: "drop",    label: "Drop",    color: "#e74c3c", desc: "What should we stop completely?" },
+      { key: "add",     label: "Add",     color: "#27ae60", desc: "What should we introduce?" },
+      { key: "keep",    label: "Keep",    color: "#3b6fd4", desc: "What must we protect?" },
+      { key: "improve", label: "Improve", color: "#f59e0b", desc: "What could work better?" },
+    ]
+  }
+};
+
+// ── State ─────────────────────────────────────────────────────────────────────
+
+let state = {
+  format: null,
+  sprint: "",
+  stickies: {},   // { colKey: [{ id, text, votes }] }
+  actions: [],    // [{ id, text, owner }]
+  nextId: 1,
+};
+
+let timerInterval = null;
+let timerSeconds  = 60 * 60;
+let timerRunning  = false;
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+function init() {
+  const grid = document.getElementById("formatGrid");
+  Object.entries(FORMATS).forEach(([key, fmt]) => {
+    const card = document.createElement("div");
+    card.className = "format-card";
+    card.innerHTML = `<div class="tag">${fmt.tag}</div><h3>${fmt.name}</h3><p>${fmt.desc}</p>`;
+    card.onclick = () => selectFormat(key, card);
+    grid.appendChild(card);
+  });
+
+  document.getElementById("sprintName").addEventListener("input", checkStartReady);
+}
+
+function selectFormat(key, card) {
+  document.querySelectorAll(".format-card").forEach(c => c.classList.remove("active"));
+  card.classList.add("active");
+  state.format = key;
+  checkStartReady();
+}
+
+function checkStartReady() {
+  const name = document.getElementById("sprintName").value.trim();
+  document.getElementById("startBtn").disabled = !(state.format && name);
+}
+
+// ── Retro screen ──────────────────────────────────────────────────────────────
+
+function startRetro() {
+  state.sprint  = document.getElementById("sprintName").value.trim();
+  state.stickies = {};
+  state.actions  = [];
+
+  const fmt = FORMATS[state.format];
+  fmt.columns.forEach(col => { state.stickies[col.key] = []; });
+
+  document.getElementById("retroTitle").textContent    = `${fmt.name} — ${state.sprint}`;
+  document.getElementById("retroSubtitle").textContent = `${fmt.columns.length} columns · Add stickies, vote, then capture actions`;
+
+  renderColumns();
+  renderActions();
+
+  show("retroScreen");
+  hide("setupScreen");
+  resetTimer();
+}
+
+function renderColumns() {
+  const fmt = FORMATS[state.format];
+  const container = document.getElementById("columnsContainer");
+  const colClass   = fmt.columns.length === 2 ? "col-2" : fmt.columns.length === 3 ? "col-3" : "col-4";
+  container.className = `columns ${colClass}`;
+  container.innerHTML = "";
+
+  fmt.columns.forEach(col => {
+    const div = document.createElement("div");
+    div.className = "column";
+    div.style.borderTopColor = col.color;
+    div.innerHTML = `
+      <h3 style="color:${col.color}">${col.label}</h3>
+      <p class="col-desc">${col.desc}</p>
+      <div class="stickies" id="stickies-${col.key}"></div>
+      <div class="add-sticky">
+        <input type="text" id="input-${col.key}" placeholder="Add note..." maxlength="200"
+               onkeydown="if(event.key==='Enter')addSticky('${col.key}')">
+        <button onclick="addSticky('${col.key}')">+</button>
+      </div>`;
+    container.appendChild(div);
+    renderStickies(col.key);
+  });
+}
+
+function renderStickies(colKey) {
+  const container = document.getElementById(`stickies-${colKey}`);
+  if (!container) return;
+  container.innerHTML = "";
+  const stickies = [...state.stickies[colKey]].sort((a, b) => b.votes - a.votes);
+  stickies.forEach(s => {
+    const div = document.createElement("div");
+    div.className = `sticky${s.votes > 0 ? " voted" : ""}`;
+    div.innerHTML = `
+      <span class="sticky-text">${escHtml(s.text)}${s.votes > 0 ? `<span class="vote-count">▲${s.votes}</span>` : ""}</span>
+      <span class="sticky-actions">
+        <button class="sticky-btn vote-btn" onclick="vote('${colKey}','${s.id}')" title="Vote">▲</button>
+        <button class="sticky-btn delete-btn" onclick="deleteSticky('${colKey}','${s.id}')" title="Delete">✕</button>
+      </span>`;
+    container.appendChild(div);
+  });
+}
+
+function addSticky(colKey) {
+  const input = document.getElementById(`input-${colKey}`);
+  const text  = input.value.trim();
+  if (!text) return;
+  state.stickies[colKey].push({ id: `s${state.nextId++}`, text, votes: 0 });
+  input.value = "";
+  renderStickies(colKey);
+}
+
+function vote(colKey, id) {
+  const s = state.stickies[colKey].find(x => x.id === id);
+  if (s) { s.votes++; renderStickies(colKey); }
+}
+
+function deleteSticky(colKey, id) {
+  state.stickies[colKey] = state.stickies[colKey].filter(x => x.id !== id);
+  renderStickies(colKey);
+}
+
+// ── Actions ───────────────────────────────────────────────────────────────────
+
+function addAction() {
+  const text  = document.getElementById("actionText").value.trim();
+  const owner = document.getElementById("actionOwner").value.trim();
+  if (!text) return;
+  state.actions.push({ id: `a${state.nextId++}`, text, owner: owner || "Unassigned" });
+  document.getElementById("actionText").value  = "";
+  document.getElementById("actionOwner").value = "";
+  renderActions();
+}
+
+function deleteAction(id) {
+  state.actions = state.actions.filter(a => a.id !== id);
+  renderActions();
+}
+
+function renderActions() {
+  const container = document.getElementById("actionsList");
+  container.innerHTML = "";
+  state.actions.forEach(a => {
+    const div = document.createElement("div");
+    div.className = "action-row";
+    div.innerHTML = `
+      <span>${escHtml(a.text)}</span>
+      <span class="owner-tag">${escHtml(a.owner)}</span>
+      <button onclick="deleteAction('${a.id}')">✕</button>`;
+    container.appendChild(div);
+  });
+}
+
+// ── Timer ─────────────────────────────────────────────────────────────────────
+
+function toggleTimer() {
+  if (timerRunning) {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById("timerBtn").textContent = "▶ Resume";
+  } else {
+    timerInterval = setInterval(tickTimer, 1000);
+    timerRunning  = true;
+    document.getElementById("timerBtn").textContent = "⏸ Pause";
+  }
+}
+
+function tickTimer() {
+  if (timerSeconds <= 0) { clearInterval(timerInterval); return; }
+  timerSeconds--;
+  updateTimerDisplay();
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning  = false;
+  timerSeconds  = 60 * 60;
+  document.getElementById("timerBtn").textContent = "▶ Start";
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m   = Math.floor(timerSeconds / 60);
+  const s   = timerSeconds % 60;
+  const el  = document.getElementById("timer");
+  el.textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  el.className   = timerSeconds <= 300 ? "timer danger" : timerSeconds <= 600 ? "timer warning" : "timer";
+}
+
+// ── Summary ───────────────────────────────────────────────────────────────────
+
+function showSummary() {
+  const fmt  = FORMATS[state.format];
+  document.getElementById("summaryMeta").textContent =
+    `${state.sprint} · ${fmt.name} · ${new Date().toLocaleDateString("en-IN", { day:"numeric", month:"long", year:"numeric" })}`;
+
+  const container = document.getElementById("summaryContent");
+  container.innerHTML = "";
+
+  // Stickies by column
+  fmt.columns.forEach(col => {
+    const stickies = [...state.stickies[col.key]].sort((a, b) => b.votes - a.votes);
+    if (!stickies.length) return;
+    const block = document.createElement("div");
+    block.className = "summary-block";
+    block.innerHTML = `<h3 style="color:${col.color}">${col.label}</h3>`;
+    stickies.forEach(s => {
+      const d = document.createElement("div");
+      d.className = "summary-sticky";
+      d.innerHTML = `<span>${escHtml(s.text)}</span>${s.votes > 0 ? `<span class="vote-count">▲${s.votes}</span>` : ""}`;
+      block.appendChild(d);
+    });
+    container.appendChild(block);
+  });
+
+  // Actions
+  if (state.actions.length) {
+    const block = document.createElement("div");
+    block.className = "summary-block";
+    block.innerHTML = `<h3 style="color:#27ae60">Action Items (${state.actions.length})</h3>`;
+    state.actions.forEach(a => {
+      const d = document.createElement("div");
+      d.className = "summary-action";
+      d.innerHTML = `<span>${escHtml(a.text)}</span><span class="owner-tag">${escHtml(a.owner)}</span>`;
+      block.appendChild(d);
+    });
+    container.appendChild(block);
+  }
+
+  show("summaryScreen");
+  hide("retroScreen");
+}
+
+function exportText() {
+  const fmt  = FORMATS[state.format];
+  let text   = `RETRO SUMMARY — ${state.sprint}\nFormat: ${fmt.name}\nDate: ${new Date().toLocaleDateString()}\n\n`;
+
+  fmt.columns.forEach(col => {
+    const stickies = [...state.stickies[col.key]].sort((a, b) => b.votes - a.votes);
+    if (!stickies.length) return;
+    text += `${col.label.toUpperCase()}\n${"─".repeat(30)}\n`;
+    stickies.forEach(s => { text += `• ${s.text}${s.votes > 0 ? ` (▲${s.votes})` : ""}\n`; });
+    text += "\n";
+  });
+
+  if (state.actions.length) {
+    text += `ACTION ITEMS\n${"─".repeat(30)}\n`;
+    state.actions.forEach(a => { text += `☐ ${a.text} → ${a.owner}\n`; });
+  }
+
+  navigator.clipboard.writeText(text)
+    .then(() => alert("Summary copied to clipboard!"))
+    .catch(() => alert("Copy failed — please select and copy the text manually."));
+}
+
+function showRetro() { show("retroScreen"); hide("summaryScreen"); }
+function goHome()    { show("setupScreen"); hide("retroScreen"); hide("summaryScreen"); resetTimer(); }
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function show(id) { document.getElementById(id).classList.remove("hidden"); }
+function hide(id) { document.getElementById(id).classList.add("hidden"); }
+function escHtml(str) {
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+init();
+</script>
+</body>
+</html>
